@@ -1,10 +1,24 @@
 import mongoose from "mongoose";
 import chalk from "chalk";
+import path, { dirname } from "path";
+import fs from "fs"
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * ! Global error handler for Mongoose/MongoDB
  */
 export const globalErrorHandler = (error, req, res, next) => {
+  const errorDetails = `
+  Timestamp: ${new Date().toISOString()}
+  API ENDPOINT : ${req.originalUrl || req.path}
+  Error Name: ${error.name || "Unknown Error"}
+  Error Message: ${error.message || "No message provided"}
+  Stack Trace: ${error.stack || "No stack trace available"}
+
+  ========================================================
+`;
   console.error(
     chalk.red(
       `Error ${error.stack ? `Stack --> ${error.stack} \n` : ``}${
@@ -12,6 +26,19 @@ export const globalErrorHandler = (error, req, res, next) => {
       }`
     )
   );
+
+  // Create or append to the error.log file
+    const logFilePath = path.join(__dirname, "../../error.log");
+  
+    // Check if the error.log file exists
+    fs.appendFile(logFilePath, errorDetails, (err) => {
+      if (err) {
+        console.error(chalk.red("Error logging to file:", err));
+      } else {
+        console.log(chalk.green("Error details logged to 'error.log'"));
+      }
+    });
+  
 
   // Mongoose validation error
   if (error instanceof mongoose.Error.ValidationError) {

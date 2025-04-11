@@ -25,11 +25,20 @@ app.use(
   })
 );
 
-connectDb().then(() => {
-  logger.info("Connected to the database successfully!");
-}).catch((error) => {
-  logger.error("Error connecting to the database:", error);
-});
+// In your index.js
+connectDb()
+  .then(() => {
+    logger.info("Connected to the database successfully!");
+    // Only start the server after DB connection succeeds
+    app.listen(PORT, () => {
+      logger.info(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    logger.error("Error connecting to the database:", error);
+    // Handle the error without crashing, or exit gracefully
+    process.exit(1); // Optional: exit with error code if DB connection is essential
+  });
 
 app.get("/", (req, res) => {
   res.send("Server is running!");
