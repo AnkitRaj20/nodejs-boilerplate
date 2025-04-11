@@ -31,6 +31,10 @@ connectDb().then(() => {
   logger.error("Error connecting to the database:", error);
 });
 
+app.get("/", (req, res) => {
+  res.send("Server is running!");
+});
+
 app.listen(PORT , () => {
     logger.info(`Server is running on port ${PORT}`);
 })
