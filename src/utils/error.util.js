@@ -45,11 +45,12 @@ export const globalErrorHandler = (error, req, res, next) => {
     });
   }
 
-  // Custom application-level error with httpStatus
-  if (error.httpStatus && error.message) {
-    return res.status(error.httpStatus).json({
+  // Custom application-level error with statusCode (Updated from httpStatus)
+  if (error.statusCode && error.message) {
+    return res.status(error.statusCode).json({
       status: false,
       message: error.message,
+      errors: error.errors && error.errors.length > 0 ? error.errors : undefined,
     });
   }
 
@@ -146,11 +147,15 @@ export const globalErrorHandler = (error, req, res, next) => {
 //       });
 //     }
   
-//     // Handle internal errors
-//     if (error.httpStatus && error.message) {
+//     // Handle internal errors (Updated from httpStatus to statusCode)
+//     if (error.statusCode && error.message) {
 //       return res
-//         .status(error.httpStatus)
-//         .json({ status: false, message: error.message });
+//         .status(error.statusCode)
+//         .json({ 
+//           status: false, 
+//           message: error.message,
+//           errors: error.errors && error.errors.length > 0 ? error.errors : undefined,
+//         });
 //     }
   
 //     // ESLINT-disable-next-line no-lonely-if
@@ -163,4 +168,3 @@ export const globalErrorHandler = (error, req, res, next) => {
 //       details: process.env.NODE_ENV === "development" ? error.message : undefined, // Expose details only in development
 //     });
 //   };
-  

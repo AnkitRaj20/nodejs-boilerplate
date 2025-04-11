@@ -13,7 +13,7 @@ const sendResponse = (res, statusCode, data, message, token) => {
     }
   
     const response = {
-      status: statusCode < 400 ? true : false,
+      success: statusCode < 400 ? true : false,
       ...(message ? { message } : null),
       ...(data
         ? Array.isArray(data.results)
